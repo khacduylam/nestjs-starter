@@ -1,0 +1,25 @@
+version: "3.9"
+
+networks:
+  local_net:
+    driver: bridge
+
+volumes: 
+  postgres:
+
+services:
+  postgresql:
+    container_name: postgres_local
+    image: arm64v8/postgres:14-alpine
+    restart: always
+    ports:
+      - 5444:5432
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres:/var/lib/postgresql/data/pgdata
+    networks:
+      - local_net
