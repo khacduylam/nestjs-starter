@@ -1,19 +1,15 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiExtraModels,
-  getSchemaPath,
-} from '@nestjs/swagger';
-import { BaseResponseDto } from 'src/shared/dtos/base.dto';
+import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { BaseResponseDto } from 'src/core/dtos/base.dto';
 
-export const ApiCustomCreatedResponse = <TModel extends Type<any>>(
+export const ApiCustomOkResponse = <TModel extends Type<any>>(
   model: TModel,
   metadata?: any,
 ) => {
   return applyDecorators(
     ApiExtraModels(BaseResponseDto),
     ApiExtraModels(model),
-    ApiCreatedResponse({
+    ApiOkResponse({
       schema: {
         allOf: [
           { $ref: getSchemaPath(BaseResponseDto) },

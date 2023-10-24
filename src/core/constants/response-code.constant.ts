@@ -24,7 +24,7 @@ export const UNAUTHORIZED: BaseResponseDto = {
 };
 export const INVALID_TOKEN: BaseResponseDto = {
   code: 1004,
-  statusCode: HttpStatus.BAD_REQUEST,
+  statusCode: HttpStatus.UNAUTHORIZED,
   message: 'INVALID_TOKEN',
 };
 export const ACCESS_DENIED: BaseResponseDto = {
@@ -58,4 +58,9 @@ export const USER_EMAIL_EXISTED: BaseResponseDto = {
   code: 1101,
   statusCode: HttpStatus.BAD_REQUEST,
   message: 'USER_EMAIL_EXISTED',
+};
+export const USER_PASSWORD_IS_INCORRECT: BaseResponseDto = {
+  code: 1102,
+  statusCode: HttpStatus.BAD_REQUEST,
+  message: 'USER_PASSWORD_IS_INCORRECT',
 };

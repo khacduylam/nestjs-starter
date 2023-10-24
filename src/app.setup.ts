@@ -1,9 +1,14 @@
-import { INestApplication, ValidationPipe } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as basicAuth from 'express-basic-auth';
+import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 
-export function configure(app: INestApplication, configService: ConfigService) {
+export async function setup() {
+  const app = await NestFactory.create(AppModule);
+  const configService = app.get<ConfigService>(ConfigService);
+
   // Enable CORS for all
   app.enableCors({
     origin: '*',
@@ -34,5 +39,6 @@ export function configure(app: INestApplication, configService: ConfigService) {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
-}
 
+  return app;
+}

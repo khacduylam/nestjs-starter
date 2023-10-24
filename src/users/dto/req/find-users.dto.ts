@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsEmail, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
-import { BasePagingQueryDto } from 'src/shared/dtos/pagination.dto';
+import { BasePagingQueryDto } from 'src/core/dtos/pagination.dto';
 import { UserGender } from 'src/users/users.enum';
 
 export class FindUserDto {

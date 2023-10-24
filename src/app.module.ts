@@ -1,16 +1,28 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { UsersModule } from './users/users.module';
+import { LoggerModule } from './core/logger/logger.module';
+import { HttpExceptionFilter } from './core/filters/http-exception.filter';
+import { RequestLoggingMiddleware } from './core/middlewares/request-logging.middleware';
+import { EnvSchema } from './env.schema';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    /**
+     * @Note: configService.get<boolean|number>('<ENV>')
+     * Use validationSchema to validate and ensure <ENV>s are converted to <boolean|number> type.
+     * If not, <ENV> got 'string' as type.
+     *
+     */
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: EnvSchema,
+    }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -23,9 +35,10 @@ import { UsersModule } from './users/users.module';
         entities: ['dist/**/*.entity.{ts,js}'],
         synchronize: configService.get<boolean>('DB_SYNC'),
         retryAttempts: 3,
-        logging: configService.get<string>('NODE_ENV') === 'dev',
+        logging: configService.get<boolean>('DB_LOG'),
       }),
     }),
+    LoggerModule,
     UsersModule,
     AuthModule,
   ],
@@ -38,4 +51,8 @@ import { UsersModule } from './users/users.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggingMiddleware).forRoutes('*');
+  }
+}

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { BaseObjectDto } from 'src/shared/dtos/base.dto';
+import { Expose, Transform } from 'class-transformer';
+import { BaseObjectDto } from 'src/core/dtos/base.dto';
 
 export class UserDto extends BaseObjectDto {
   @ApiProperty()
@@ -17,6 +17,27 @@ export class UserDto extends BaseObjectDto {
 
   @ApiProperty()
   @Expose()
+  firstName: string;
+
+  @ApiProperty()
+  @Expose()
+  lastName: string;
+
+  @ApiProperty()
+  @Expose()
+  @Transform(({ obj }) => {
+    const firstName = obj['firstName'];
+    const lastName = obj['lastName'];
+    if (firstName && lastName) {
+      return firstName + ' ' + lastName;
+    } else if (firstName) {
+      return firstName;
+    } else if (lastName) {
+      return lastName;
+    }
+
+    return null;
+  })
   fullName: string;
 
   @ApiProperty()

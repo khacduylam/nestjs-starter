@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import {
   USER_EMAIL_EXISTED,
   USER_EMAIL_OR_PASSWORD_IS_INCORRECT,
-} from 'src/shared/constants/response-code.constant';
+} from 'src/core/constants/response-code.constant';
 import { CreateUserDto } from 'src/users/dto/req/create-user.dto';
 import { FindUserDto } from 'src/users/dto/req/find-users.dto';
 import { User } from 'src/users/entities/users.entity';
@@ -45,17 +45,11 @@ export class AuthService {
       throw new BadRequestException(USER_EMAIL_EXISTED);
     }
 
-    //TODO: Send & verify email by code...
-
     // Save user
     const createUserDto: CreateUserDto = {
       role: UserRole.USER,
       email: reqDto.email,
       password: reqDto.password,
-      phone: reqDto.phone,
-      sex: reqDto.sex,
-      fullName: reqDto.fullName,
-      photoUrl: reqDto.photoUrl,
     };
     user = await this.usersService.createOne(createUserDto);
 
@@ -67,7 +61,7 @@ export class AuthService {
     const findUserDto: FindUserDto = { email: reqDto.email };
     let user = await this.usersService.findOne(findUserDto);
     if (!user) {
-      throw new NotFoundException(USER_EMAIL_OR_PASSWORD_IS_INCORRECT);
+      throw new BadRequestException(USER_EMAIL_OR_PASSWORD_IS_INCORRECT);
     }
 
     // Check password

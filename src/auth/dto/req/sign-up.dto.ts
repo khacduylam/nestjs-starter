@@ -2,15 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsEmail,
-  IsIn,
   IsMobilePhone,
   IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
-import { PASSWORD_PATTERN } from 'src/shared/constants/auth.constant';
-import { UserGender } from 'src/users/users.enum';
+import { PASSWORD_PATTERN } from 'src/core/constants/auth.constant';
 
 export class SignUpDto {
   @ApiProperty()
@@ -32,20 +30,4 @@ export class SignUpDto {
   @IsOptional()
   @IsMobilePhone('vi-VN')
   phone?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  fullName?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  @IsIn(Object.values(UserGender))
-  sex?: string = UserGender.UNSET;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  photoUrl: string;
 }

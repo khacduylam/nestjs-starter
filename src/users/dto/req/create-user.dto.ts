@@ -9,7 +9,7 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
-import { PASSWORD_PATTERN } from 'src/shared/constants/auth.constant';
+import { PASSWORD_PATTERN } from 'src/core/constants/auth.constant';
 import { UserGender, UserRole } from 'src/users/users.enum';
 
 export class CreateUserDto {
@@ -42,7 +42,12 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  fullName?: string;
+  firstName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  lastName?: string;
 
   @ApiProperty({ enum: UserGender, enumName: 'UserGender', required: false })
   @IsOptional()

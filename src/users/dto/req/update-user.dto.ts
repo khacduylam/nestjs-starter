@@ -11,7 +11,12 @@ export class UpdateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  fullName?: string;
+  firstName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  lastName?: string;
 
   @ApiProperty({ enum: UserGender, enumName: 'UserGender', required: false })
   @IsOptional()

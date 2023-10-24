@@ -1,6 +1,6 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
-import { BaseResponseDto } from '../dtos/base.dto';
+import { BaseResponseDto } from 'src/core/dtos/base.dto';
 
 export function mapObject<T, V>(cls: ClassConstructor<T>, obj: V) {
   return plainToInstance(cls, obj, { excludeExtraneousValues: true });

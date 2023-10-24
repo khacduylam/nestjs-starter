@@ -7,13 +7,13 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { UsersService } from 'src/users/users.service';
-import { AuthUser } from 'src/shared/entities/auth-user.entity';
-import { IS_PUBLIC_KEY } from 'src/shared/constants/auth.constant';
-import { CustomRequest } from 'src/shared/interfaces/misc.interface';
+import { AuthUser } from 'src/core/entities/auth-user.entity';
+import { IS_PUBLIC_KEY } from 'src/core/constants/auth.constant';
+import { CustomRequest } from 'src/core/interfaces/misc.interface';
 import {
   INVALID_TOKEN,
   UNAUTHORIZED,
-} from 'src/shared/constants/response-code.constant';
+} from 'src/core/constants/response-code.constant';
 import { ConfigService } from '@nestjs/config';
 
 export type JwtPayload = {

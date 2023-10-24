@@ -1,13 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare, hash } from 'bcrypt';
 import { paginate } from 'nestjs-typeorm-paginate';
-import { HASH_SALT_ROUNDS } from 'src/shared/constants/auth.constant';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/req/create-user.dto';
 import { FindUserDto, FindUsersDto } from './dto/req/find-users.dto';
 import { UpdateUserDto } from './dto/req/update-user.dto';
 import { User } from './entities/users.entity';
+import { HASH_SALT_ROUNDS } from 'src/core/constants/auth.constant';
+import {
+  NOT_FOUND,
+  USER_PASSWORD_IS_INCORRECT,
+} from 'src/core/constants/response-code.constant';
+import { ChangePasswordDto } from './dto/req/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -55,7 +64,7 @@ export class UsersService {
   async findOneByIDAndUpdate(id: number, reqDto: UpdateUserDto) {
     const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
     if (!user) {
-      return null;
+      throw new NotFoundException(NOT_FOUND);
     }
 
     Object.assign(user, reqDto);
@@ -64,10 +73,30 @@ export class UsersService {
     return user;
   }
 
+  async findOneByIDAndChangePassword(id: number, reqDto: ChangePasswordDto) {
+    const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
+    if (!user) {
+      throw new NotFoundException(NOT_FOUND);
+    }
+
+    const { oldPassword, newPassword } = reqDto;
+    const matches = await this.comparePasswords(user, oldPassword);
+    if (!matches) {
+      throw new BadRequestException(USER_PASSWORD_IS_INCORRECT);
+    }
+
+    user.password = newPassword;
+    await this.hashPassword(user);
+
+    await this.usersRepository.save(user);
+
+    return user;
+  }
+
   async findOneByIDAndDelete(id: number) {
     const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
     if (!user) {
-      return null;
+      throw new NotFoundException(NOT_FOUND);
     }
 
     Object.assign(user, { isDeleted: true });

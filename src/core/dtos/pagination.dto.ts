@@ -4,7 +4,7 @@ import {
   DEFAULT_LIMIT,
   DEFAULT_PAGE,
   MAX_LIMIT,
-} from 'src/shared/constants/pagination.constant';
+} from '../constants/pagination.constant';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BasePagingQueryDto {

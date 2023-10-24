@@ -1,6 +1,6 @@
-import { BaseEntity } from 'src/shared/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 import { UserGender, UserRole } from '../users.enum';
+import { BaseEntity } from 'src/core/entities/base.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -23,7 +23,7 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   firstName: string;
-  
+
   @Column({ nullable: true })
   lastName: string;
 
@@ -32,4 +32,7 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   photoUrl: string;
+
+  @Column({ nullable: true, default: false })
+  emailVerified: boolean;
 }

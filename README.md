@@ -65,7 +65,3 @@ npm run start:dev
 ## Testing 
 - API Endpoint: http://localhost:{POST}/
 
-
-## TODO 
-- Setup logger 
-- Setup role-based guard 
