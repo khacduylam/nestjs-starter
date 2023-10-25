@@ -1,59 +1,30 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare, hash } from 'bcrypt';
 import { paginate } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/req/create-user.dto';
 import { FindUserDto, FindUsersDto } from './dto/req/find-users.dto';
-import { UpdateUserDto } from './dto/req/update-user.dto';
 import { User } from './entities/users.entity';
-import { HASH_SALT_ROUNDS } from 'src/core/constants/auth.constant';
-import {
-  NOT_FOUND,
-  USER_PASSWORD_IS_INCORRECT,
-} from 'src/core/constants/response-code.constant';
+import { USER_PASSWORD_IS_INCORRECT } from 'src/common/constants/response-code.constant';
 import { ChangePasswordDto } from './dto/req/change-password.dto';
+import { ConfigService } from '@nestjs/config';
+import { UserRole } from './users.enum';
+import { HASH_SALT_ROUNDS } from 'src/auth/auth.constant';
+import { BaseService } from 'src/common/services/base.service';
 
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseService<User> {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
-
-  async findOneByID(id: number) {
-    const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
-
-    return user;
+    private readonly configService: ConfigService,
+  ) {
+    super(usersRepository);
   }
 
-  async findOne(reqDto: FindUserDto) {
-    const user = await this.usersRepository.findOneBy({
-      ...reqDto,
-      isDeleted: false,
-    });
-
-    return user;
-  }
-
-  async findAndPaginate(reqDto: FindUsersDto, options?: any) {
-    const route = options?.route || null;
-    const { page, limit, ...query } = reqDto;
-    const queryBuilder = this.usersRepository.createQueryBuilder('u');
-    queryBuilder.where({ ...query, isDeleted: false });
-    queryBuilder.orderBy('u.id', 'DESC');
-
-    const result = await paginate<User>(queryBuilder, { page, limit, route });
-
-    return result;
-  }
-
-  async createOne(reqDto: CreateUserDto) {
-    const user = new User({ ...reqDto });
+  async create(createDto: CreateUserDto) {
+    const user = this.usersRepository.create({ ...createDto });
     await this.hashPassword(user);
 
     await this.usersRepository.save(user);
@@ -61,25 +32,13 @@ export class UsersService {
     return user;
   }
 
-  async findOneByIDAndUpdate(id: number, reqDto: UpdateUserDto) {
-    const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
-    if (!user) {
-      throw new NotFoundException(NOT_FOUND);
-    }
+  async findOneAndChangePassword(
+    queryDto: FindUserDto,
+    updateDto: ChangePasswordDto,
+  ) {
+    const user = await this.findExistedOne(queryDto);
 
-    Object.assign(user, reqDto);
-    await this.usersRepository.save(user);
-
-    return user;
-  }
-
-  async findOneByIDAndChangePassword(id: number, reqDto: ChangePasswordDto) {
-    const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
-    if (!user) {
-      throw new NotFoundException(NOT_FOUND);
-    }
-
-    const { oldPassword, newPassword } = reqDto;
+    const { oldPassword, newPassword } = updateDto;
     const matches = await this.comparePasswords(user, oldPassword);
     if (!matches) {
       throw new BadRequestException(USER_PASSWORD_IS_INCORRECT);
@@ -88,18 +47,6 @@ export class UsersService {
     user.password = newPassword;
     await this.hashPassword(user);
 
-    await this.usersRepository.save(user);
-
-    return user;
-  }
-
-  async findOneByIDAndDelete(id: number) {
-    const user = await this.usersRepository.findOneBy({ id, isDeleted: false });
-    if (!user) {
-      throw new NotFoundException(NOT_FOUND);
-    }
-
-    Object.assign(user, { isDeleted: true });
     await this.usersRepository.save(user);
 
     return user;
@@ -118,5 +65,33 @@ export class UsersService {
     console.log(plainPassword, user.password, matches);
 
     return matches;
+  }
+
+  async initSystemAdmin() {
+    const systemEmail = this.configService.get<string>('SYSTEM_EMAIL');
+    const systemPassword = this.configService.get<string>('SYSTEM_PASSWORD');
+
+    let admin = await this.usersRepository.findOneBy({
+      isDeleted: false,
+      role: UserRole.ADMIN,
+      email: systemEmail,
+    });
+    if (admin) {
+      return { admin, isNew: false };
+    }
+
+    admin = new User({
+      role: UserRole.ADMIN,
+      email: systemEmail,
+      password: systemPassword,
+      firstName: 'System',
+      lastName: 'Admin',
+      emailVerified: true,
+    });
+    await this.hashPassword(admin);
+
+    await this.usersRepository.save(admin);
+
+    return { admin, isNew: true };
   }
 }

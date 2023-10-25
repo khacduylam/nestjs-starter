@@ -64,3 +64,5 @@ export const USER_PASSWORD_IS_INCORRECT: BaseResponseDto = {
   statusCode: HttpStatus.BAD_REQUEST,
   message: 'USER_PASSWORD_IS_INCORRECT',
 };
+
+// Todo [1200 ~ 1299]

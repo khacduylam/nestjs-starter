@@ -7,18 +7,14 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { UsersService } from 'src/users/users.service';
-import { AuthUser } from 'src/core/entities/auth-user.entity';
-import { IS_PUBLIC_KEY } from 'src/core/constants/auth.constant';
-import { CustomRequest } from 'src/core/interfaces/misc.interface';
 import {
   INVALID_TOKEN,
   UNAUTHORIZED,
-} from 'src/core/constants/response-code.constant';
+} from 'src/common/constants/response-code.constant';
 import { ConfigService } from '@nestjs/config';
-
-export type JwtPayload = {
-  id: number;
-};
+import { CustomRequest, JwtPayload } from 'src/common/interfaces';
+import { UserRole } from 'src/users/users.enum';
+import { IS_PUBLIC_KEY } from '../auth.constant';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -76,16 +72,16 @@ export class AuthGuard implements CanActivate {
     }
 
     // Get user from db
-    const user = await this.usersService.findOneByID(jwtPayload.id);
+    const user = await this.usersService.findOne(jwtPayload.id);
     if (!user) {
       throw new UnauthorizedException(UNAUTHORIZED);
     }
 
-    request.user = new AuthUser({
+    request.user = {
       id: jwtPayload.id,
-      role: user.role,
+      role: user.role as UserRole,
       email: user.email,
-    });
+    };
 
     return true;
   }

@@ -8,15 +8,15 @@ import { JwtService } from '@nestjs/jwt';
 import {
   USER_EMAIL_EXISTED,
   USER_EMAIL_OR_PASSWORD_IS_INCORRECT,
-} from 'src/core/constants/response-code.constant';
+} from 'src/common/constants/response-code.constant';
 import { CreateUserDto } from 'src/users/dto/req/create-user.dto';
 import { FindUserDto } from 'src/users/dto/req/find-users.dto';
 import { User } from 'src/users/entities/users.entity';
 import { UserRole } from 'src/users/users.enum';
 import { UsersService } from 'src/users/users.service';
-import { JwtPayload } from './auth.guard';
 import { SignInDto } from './dto/req/sign-in.dto';
 import { SignUpDto } from './dto/req/sign-up.dto';
+import { JwtPayload } from 'src/common/interfaces';
 
 @Injectable()
 export class AuthService {
@@ -51,7 +51,7 @@ export class AuthService {
       email: reqDto.email,
       password: reqDto.password,
     };
-    user = await this.usersService.createOne(createUserDto);
+    user = await this.usersService.create(createUserDto);
 
     return user;
   }

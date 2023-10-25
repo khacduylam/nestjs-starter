@@ -9,7 +9,7 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
-import { PASSWORD_PATTERN } from 'src/core/constants/auth.constant';
+import { PASSWORD_PATTERN } from 'src/auth/auth.constant';
 import { UserGender, UserRole } from 'src/users/users.enum';
 
 export class CreateUserDto {

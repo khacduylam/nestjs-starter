@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
-import { BaseObjectDto } from 'src/core/dtos/base.dto';
+import { BaseObjectDto } from 'src/common/dtos/base.dto';
 
 export class UserDto extends BaseObjectDto {
   @ApiProperty()

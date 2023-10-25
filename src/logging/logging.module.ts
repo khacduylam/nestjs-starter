@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LOGGER_PROVIDER_TOKEN, createLoggerProvider } from './logger.provider';
+import { createLoggerProvider } from './logging.provider';
+import { LOGGER_PROVIDER_TOKEN } from './logging.constant';
 
 @Global()
 @Module({
@@ -20,4 +21,4 @@ import { LOGGER_PROVIDER_TOKEN, createLoggerProvider } from './logger.provider';
   ],
   exports: [LOGGER_PROVIDER_TOKEN],
 })
-export class LoggerModule {}
+export class LoggingModule {}

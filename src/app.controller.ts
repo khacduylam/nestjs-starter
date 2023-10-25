@@ -1,17 +1,21 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public } from './core/decorators/public.decorator';
+import { ApiTags } from '@nestjs/swagger';
+import { CrudApi } from './common/decorators/controller.decorator';
 
 @ApiTags('health')
 @Controller('health')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/')
-  @ApiOperation({ summary: `Check server's health` })
-  @HttpCode(HttpStatus.OK)
-  @Public()
+  @CrudApi({
+    swagger: {
+      summary: `Check server's health`,
+      httpCode: HttpStatus.OK,
+      successResponseOptions: { type: 'ok', cls: String },
+    },
+    nest: { method: 'Get', path: '/', isPublic: true },
+  })
   checkHealth(): string {
     return this.appService.getHello();
   }

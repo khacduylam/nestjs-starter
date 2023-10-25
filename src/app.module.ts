@@ -6,10 +6,11 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
-import { LoggerModule } from './core/logger/logger.module';
-import { HttpExceptionFilter } from './core/filters/http-exception.filter';
-import { RequestLoggingMiddleware } from './core/middlewares/request-logging.middleware';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { RequestLoggingMiddleware } from './common/middlewares/request-logging.middleware';
 import { EnvSchema } from './env.schema';
+import { TodosModule } from './todos/todos.module';
+import { LoggingModule } from './logging/logging.module';
 
 @Module({
   imports: [
@@ -38,9 +39,10 @@ import { EnvSchema } from './env.schema';
         logging: configService.get<boolean>('DB_LOG'),
       }),
     }),
-    LoggerModule,
+    LoggingModule,
     UsersModule,
     AuthModule,
+    TodosModule,
   ],
   controllers: [AppController],
   providers: [

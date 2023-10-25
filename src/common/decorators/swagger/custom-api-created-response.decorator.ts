@@ -4,7 +4,7 @@ import {
   ApiExtraModels,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { BaseResponseDto } from 'src/core/dtos/base.dto';
+import { BaseResponseDto } from 'src/common/dtos/base.dto';
 
 export const ApiCustomCreatedResponse = <TModel extends Type<any>>(
   model: TModel,

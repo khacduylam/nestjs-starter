@@ -3,8 +3,6 @@ import { format, transports as winstonTransports } from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
 import * as Transport from 'winston-transport';
 
-export const LOGGER_PROVIDER_TOKEN = 'LOGGER_PROVIDER_TOKEN';
-
 export interface CreateLoggerProviderOptions {
   debug?: boolean;
   maxLogFiles?: string;
@@ -60,10 +58,8 @@ export function createLoggerProvider(options: CreateLoggerProviderOptions) {
 const prettyFormat = format.printf(
   ({ service, stack, level, message, timestamp, context }) => {
     const obj = stack || context;
-    return `\x1b[32m[${service}]\x1b[0m - ${timestamp} - [${level}]: ${message} ${JSON.stringify(
-      obj,
-      null,
-      2,
-    )}`;
+    return `\x1b[32m[${service}]\x1b[0m - ${timestamp} - [${level}]: ${message} ${
+      obj ? JSON.stringify(obj, null, 2) : ''
+    }`;
   },
 );

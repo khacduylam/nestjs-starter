@@ -8,7 +8,7 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
-import { PASSWORD_PATTERN } from 'src/core/constants/auth.constant';
+import { PASSWORD_PATTERN } from 'src/auth/auth.constant';
 
 export class SignUpDto {
   @ApiProperty()

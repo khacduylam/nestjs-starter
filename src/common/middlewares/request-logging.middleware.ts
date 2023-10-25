@@ -4,9 +4,8 @@ import {
   LoggerService,
   NestMiddleware,
 } from '@nestjs/common';
-import { LOGGER_PROVIDER_TOKEN } from '../logger/logger.provider';
-import { CustomRequest } from '../interfaces/misc.interface';
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { LOGGER_PROVIDER_TOKEN } from 'src/logging/logging.constant';
 
 @Injectable()
 export class RequestLoggingMiddleware implements NestMiddleware {
@@ -15,7 +14,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     private readonly loggerService: LoggerService,
   ) {}
 
-  use(req: CustomRequest, res: Response, next: NextFunction) {
+  use(req: Request, res: Response, next: NextFunction) {
     res.on('finish', () => {
       const statusCode = res.statusCode;
       const reqInfo = {

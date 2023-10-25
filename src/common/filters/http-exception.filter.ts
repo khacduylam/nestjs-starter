@@ -9,7 +9,7 @@ import {
 import { Response } from 'express';
 import { UNKNOWN_ERROR } from '../constants/response-code.constant';
 import { BaseResponseDto } from '../dtos/base.dto';
-import { LOGGER_PROVIDER_TOKEN } from '../logger/logger.provider';
+import { LOGGER_PROVIDER_TOKEN } from 'src/logging/logging.constant';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
