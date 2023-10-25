@@ -9,7 +9,6 @@ import { UsersModule } from './users/users.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { RequestLoggingMiddleware } from './common/middlewares/request-logging.middleware';
 import { EnvSchema } from './env.schema';
-import { TodosModule } from './todos/todos.module';
 import { LoggingModule } from './logging/logging.module';
 
 @Module({
@@ -42,7 +41,6 @@ import { LoggingModule } from './logging/logging.module';
     LoggingModule,
     UsersModule,
     AuthModule,
-    TodosModule,
   ],
   controllers: [AppController],
   providers: [
