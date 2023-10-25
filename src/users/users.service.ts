@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare, hash } from 'bcrypt';
-import { paginate } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/req/create-user.dto';
-import { FindUserDto, FindUsersDto } from './dto/req/find-users.dto';
+import { FindUserDto } from './dto/req/find-users.dto';
 import { User } from './entities/users.entity';
 import { USER_PASSWORD_IS_INCORRECT } from 'src/common/constants/response-code.constant';
 import { ChangePasswordDto } from './dto/req/change-password.dto';
